@@ -25,10 +25,9 @@ p_grad = ti.Vector.field(2,dtype,shape = resolution)
 @ti.kernel
 def set_x(scale:float,translate_x:float,translate_y:float):
     for i,j in x:
-        x0 = float(ti.Vector([i,j])) / resolution[0]
+        x0 = float(ti.Vector([i,j])) / resolution[1]
         x0 = (x0 * 2) - 1
-        x0 += ti.Vector([translate_x,translate_y])
-        x[i,j] = x0 * scale
+        x[i,j] = x0 * scale + ti.Vector([translate_x,translate_y])
 
 @ti.func
 def complex_mul(c1,c2):
@@ -115,14 +114,16 @@ while window.running:
         elif e.key == 's':
             scale *= 1.02
         elif e.key == ti.GUI.LEFT:
-            translate_x -= 0.02
+            translate_x -= 0.02 * scale
         elif e.key == ti.GUI.RIGHT:
-            translate_x += 0.02
+            translate_x += 0.02 * scale
         elif e.key == ti.GUI.UP:
-            translate_y += 0.02
+            translate_y += 0.02 * scale
         elif e.key == ti.GUI.DOWN:
-            translate_y -= 0.02
-    
+            translate_y -= 0.02 * scale
+        else:
+            requires_update = False
+
     if requires_update:
         update()
 

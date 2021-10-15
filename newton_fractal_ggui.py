@@ -27,8 +27,7 @@ def set_x(scale:float,translate_x:float,translate_y:float):
     for i,j in x:
         x0 = float(ti.Vector([i,j])) / resolution[1]
         x0 = (x0 * 2) - 1
-        x0 += ti.Vector([translate_x,translate_y])
-        x[i,j] = x0 * scale
+        x[i,j] = x0 * scale + ti.Vector([translate_x,translate_y])
 
 @ti.func
 def complex_mul(c1,c2):
@@ -111,15 +110,15 @@ while window.running:
     elif window.is_pressed('s'):
         scale *= 1.02
     elif window.is_pressed(ti.GUI.LEFT):
-        translate_x -= 0.02
+        translate_x -= 0.02 * scale
     elif window.is_pressed(ti.GUI.RIGHT):
-        translate_x += 0.02
+        translate_x += 0.02 * scale
     elif window.is_pressed(ti.GUI.UP):
-        translate_y += 0.02
+        translate_y += 0.02 * scale
     elif window.is_pressed(ti.GUI.DOWN):
-        translate_y -= 0.02
+        translate_y -= 0.02 * scale
 
-    with window.GUI.sub_window("Fractal",0.75,0.05,0.2,0.9) as w:
+    with window.GUI.sub_window("Fractal",0.7,0.05,0.25,0.9) as w:
         w.text("Arrows keys to move")
         w.text("W to zoom in")
         w.text("S to zoom out")
